@@ -44,6 +44,14 @@ export function ProdutoFormScreen({ produtoExistente }: ProdutoFormScreenProps) 
   const custo = calcularCustoProduto(produtoCalculado, todosIngredientes);
   const lucroPositivo = custo.lucroUnitario >= 0;
 
+  function voltar() {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/produtos');
+    }
+  }
+
   function adicionarIngrediente(ingredienteId: string) {
     if (itensReceita.some((i) => i.ingredienteId === ingredienteId)) return;
     setItensReceita((atual) => [...atual, { ingredienteId, quantidade: 0 }]);
@@ -67,6 +75,10 @@ export function ProdutoFormScreen({ produtoExistente }: ProdutoFormScreenProps) 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <Pressable style={styles.botaoVoltar} onPress={voltar} hitSlop={8}>
+          <Text style={styles.botaoVoltarTexto}>← Voltar</Text>
+        </Pressable>
+
         <Text style={styles.titulo}>
           {produtoExistente ? 'Editar produto' : 'Novo produto'}
         </Text>
@@ -180,7 +192,7 @@ export function ProdutoFormScreen({ produtoExistente }: ProdutoFormScreenProps) 
           />
         </View>
 
-        <Pressable style={styles.botaoSalvar} onPress={() => router.back()}>
+        <Pressable style={styles.botaoSalvar} onPress={voltar}>
           <Text style={styles.botaoSalvarTexto}>Salvar produto</Text>
         </Pressable>
       </ScrollView>
@@ -235,6 +247,12 @@ function LinhaResumo({
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: colors.background },
   container: { padding: spacing.lg, paddingBottom: spacing.xxl },
+  botaoVoltar: { alignSelf: 'flex-start', marginBottom: spacing.md },
+  botaoVoltarTexto: {
+    fontSize: typography.size.body,
+    fontWeight: typography.weight.medium,
+    color: colors.crust,
+  },
   titulo: {
     fontSize: typography.size.display,
     fontWeight: typography.weight.bold,
